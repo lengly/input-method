@@ -29,5 +29,3 @@ label4 = Label(w3, text="列表：", fg='blue', height=10)
 label4.pack(side=LEFT)
 wordList = Text(w3)
 wordList.pack(side=LEFT)
-
-root.mainloop()
