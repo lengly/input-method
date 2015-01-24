@@ -1,6 +1,7 @@
 #-*- coding: utf8 -*-
 import UI
 import model
+import train
 
 def load_dictionary():
     d = {}
@@ -85,6 +86,10 @@ print '字典加载完毕'
 load_words(dictionary)
 print '词组加载完毕'
 print '字典长度：%d' % len(dictionary)
+
+train.load()
+train.train_with_freq(dictionary)
+
 reversedDict = {}
 for key,values in dictionary.items():
     for value in values:
@@ -93,7 +98,6 @@ for key,values in dictionary.items():
         else:
             reversedDict[value] = [key]
 m = model.Model()
-
 
 
 UI.root.mainloop()
