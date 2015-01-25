@@ -17,4 +17,19 @@ class Model:
         for i in range(len(key),0,-1):
             if key[:i] in dictionary:
                 self.words.extend(dictionary[key[:i]])
+        if key in dictionary: return
+        if len(key)==0: return
+        longMatch = ''
+        t = key[:]
+        while len(t) > 0:
+            flag = True
+            for i in range(len(t),0,-1):
+                if t[:i] in dictionary:
+                    longMatch = longMatch + dictionary[t[:i]][0]
+                    t = t[i:]
+                    flag = False
+                    break
+            if flag: break
+        if ~flag and len(longMatch)>0 : self.words = [longMatch] + self.words
+
 

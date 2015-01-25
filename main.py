@@ -5,7 +5,7 @@ import train
 
 def load_dictionary():
     d = {}
-    with open("dict.txt","r") as f:
+    with open("txt/dict.txt","r") as f:
         for line in f.read().split('\n'):
             if line.startswith("#"):continue
             else:
@@ -29,7 +29,7 @@ def load_words(dictionary):
             else:
                 reversedDict[value] = [key]
     #读入词库
-    with open("words.txt","r") as f:
+    with open("txt/words.txt","r") as f:
         for line in f.read().split('\n'):
             for word in line.split('\t'):
                 values = [[]]
@@ -70,33 +70,52 @@ def key(event):
             result = m.pager()[num]
             UI.outputValue.set(UI.outputValue.get() + result.decode('utf8'))
             s = UI.inputValue.get()
-            t = reversedDict[result]
-            for i in t:
-                if s.startswith(i):
-                    s = s[len(i):-1]
-                    break
-            UI.inputValue.set(s)
+            if result in reversedDict:
+                t = reversedDict[result]
+                tmp = 0
+                for i in t:
+                    if s.startswith(i) and len(i)>tmp:
+                        tmp = len(i)
+                    s = s[tmp:-1]
+                UI.inputValue.set(s)
+            else:
+                UI.inputValue.set('')
         m.query(UI.inputValue.get(), dictionary)
     show(UI.wordList)
+
+def get_reversed_dict(dict):
+    reversedDict = {}
+    for key,values in dictionary.items():
+        for value in values:
+            if value in reversedDict:
+                reversedDict[value].append(key)
+            else:
+                reversedDict[value] = [key]
+    return reversedDict
+
 
 UI.inputText.bind("<KeyRelease>", key)
 
 dictionary = load_dictionary()
 print '字典加载完毕'
+
+for key,values in dictionary.items():
+    if key.endswith('eng'):
+        if key[:-1] in dictionary:
+            dictionary[key[:-1]].extend(dictionary[key])
+        else:
+            dictionary[key[:-1]] = dictionary[key][:]
+
 load_words(dictionary)
 print '词组加载完毕'
 print '字典长度：%d' % len(dictionary)
 
+reversedDict = get_reversed_dict(dictionary)
+
 train.load()
 train.train_with_freq(dictionary)
 
-reversedDict = {}
-for key,values in dictionary.items():
-    for value in values:
-        if value in reversedDict:
-            reversedDict[value].append(key)
-        else:
-            reversedDict[value] = [key]
+
 m = model.Model()
 
 

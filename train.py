@@ -5,16 +5,18 @@ import nltk
 
 words = []
 fd = None
+bfd = None
 
 def load():
     global words, fd
     cnt = 0
     print '读入语料库'
-    with open("prose.txt","r") as f:
+    with open("txt/prose.txt","r") as f:
         for line in f.read().split('\n'):
             words.extend(list(jieba.cut(line)))
     print '语料库分词完毕'
     fd = nltk.FreqDist(words)
+    bfd = nltk.FreqDist(nltk.bigrams(words))
 
 def sort(lists):
     n = len(lists)
